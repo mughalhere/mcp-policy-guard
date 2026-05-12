@@ -1,0 +1,74 @@
+{
+  "name": "mcp-policy-guard",
+  "version": "0.1.0",
+  "description": "Policy and safety middleware for MCP servers \u2014 authorization, rate limits, confirmation gates, audit logging, and PII redaction.",
+  "license": "MIT",
+  "author": "Muhammad Zia <mughalhere@icloud.com>",
+  "homepage": "https://github.com/mughalhere/mcp-guard#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mughalhere/mcp-guard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mughalhere/mcp-guard/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "middleware",
+    "ai-safety",
+    "rate-limit",
+    "audit",
+    "guardrails",
+    "typescript"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src tests --ext .ts",
+    "prepublishOnly": "npm run build && npm run test && npm run typecheck"
+  },
+  "peerDependencies": {
+    "@modelcontextprotocol/sdk": ">=1.0.0"
+  },
+  "dependencies": {
+    "pino": "^9.6.0"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@types/node": "^22.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.4.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0",
+    "zod": "^3.25.0"
+  }
+}
