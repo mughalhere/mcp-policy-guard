@@ -27,6 +27,10 @@ guard(server, {
 - **No changes to your tools** — one call wraps the whole `tools/call` path
 - **One dependency** (`pino`), ESM + CJS, TypeScript types included
 
+**[Try it in your browser →](https://mughalhere.github.io/mcp-policy-guard/)** — the
+demo runs this library compiled for the page, so the verdicts, tokens, and
+redaction you see are the real thing.
+
 > **Prompt injection is out of scope.** This library governs tool *execution*, not
 > model prompt integrity. Pair it with input-side gating such as
 > [`prompt-protection`](https://www.npmjs.com/package/prompt-protection).

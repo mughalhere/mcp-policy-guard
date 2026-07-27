@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>mcp-policy-guard — policy and safety middleware for MCP servers</title>
+    <meta
+      name="description"
+      content="Authorization, rate limits, confirmation gates, audit logging, and PII redaction for Model Context Protocol servers. Try it in the browser."
+    />
+    <meta property="og:title" content="mcp-policy-guard" />
+    <meta
+      property="og:description"
+      content="Policy and safety middleware for MCP servers — decide which tool calls run, which need a human, and what the response may contain."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🛡️</text></svg>"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <h1>mcp-policy-guard</h1>
+        <p class="tagline">
+          An MCP server hands a model a set of tools and, by default, trusts every call it makes.
+          This sits between the two — deciding which calls run, which need a human, how often they
+          may happen, and what the response is allowed to contain.
+        </p>
+        <div class="badges">
+          <a class="badge" href="https://www.npmjs.com/package/mcp-policy-guard">npm</a>
+          <a class="badge" href="https://github.com/mughalhere/mcp-policy-guard">github</a>
+          <a class="badge" href="https://github.com/mughalhere/mcp-policy-guard/blob/main/docs/api.md">api docs</a>
+          <span class="badge">MIT</span>
+          <span class="badge">node ≥ 22</span>
+          <span class="badge">1 dependency</span>
+        </div>
+        <div class="install">
+          <pre>npm install mcp-policy-guard</pre>
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <div class="wrap">
+        <h2>Try it</h2>
+        <p class="section-note">
+          Everything below runs the real published library, compiled to run in this page — the same
+          policy evaluation, token buckets, confirmation tokens, and redaction you get on a server.
+          Nothing is sent anywhere.
+        </p>
+
+        <div class="chips" id="scenarios" role="group" aria-label="Scenario"></div>
+
+        <div class="demo">
+          <div>
+            <div class="panel">
+              <div class="panel-head"><span>Guard configuration</span></div>
+              <div class="panel-body">
+                <pre class="policy" id="policy-source"></pre>
+              </div>
+            </div>
+
+            <div class="panel" style="margin-top: 20px">
+              <div class="panel-head"><span>Call a tool</span></div>
+              <div class="panel-body">
+                <div class="field">
+                  <label for="tool">Tool name</label>
+                  <select id="tool"></select>
+                </div>
+                <div class="field">
+                  <label for="args">Arguments (JSON)</label>
+                  <textarea id="args" spellcheck="false"></textarea>
+                </div>
+                <div class="row">
+                  <button class="primary" id="call">Call tool</button>
+                  <button id="retry" disabled>Retry with token</button>
+                  <button id="spam">Send 12 rapidly</button>
+                  <button id="reset">Reset</button>
+                </div>
+                <p class="hint" id="hint"></p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel">
+              <div class="panel-head">
+                <span>Result</span>
+                <span class="verdict idle" id="verdict">awaiting call</span>
+              </div>
+              <div class="panel-body"><pre class="out" id="result">// press "Call tool"</pre></div>
+            </div>
+
+            <div class="panel" style="margin-top: 20px">
+              <div class="panel-head"><span>Audit trail</span><span id="audit-count">0 entries</span></div>
+              <div class="panel-body">
+                <ul class="log" id="audit">
+                  <li class="empty">Every decision is recorded — including the ones that never reach a tool.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="panel" style="margin-top: 20px">
+              <div class="panel-head"><span>Metrics</span></div>
+              <div class="panel-body">
+                <div class="stats" id="stats"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>What it does</h2>
+        <p class="section-note">One call wraps the whole <code>tools/call</code> path. Your tool implementations don't change.</p>
+        <div class="features">
+          <div class="feature">
+            <h3>Default deny</h3>
+            <p>A tool with no matching <code>allow</code> rule does not run — including tools added to the server later.</p>
+          </div>
+          <div class="feature">
+            <h3>Argument-aware rules</h3>
+            <p>Rules take a <code>when</code> condition, so the same tool can be permitted for one path and refused for another.</p>
+          </div>
+          <div class="feature">
+            <h3>Confirmation gates</h3>
+            <p>Single-use tokens bound to tool, arguments, and identity — or an out-of-band <code>approve</code> callback that keeps the authorising signal away from the model.</p>
+          </div>
+          <div class="feature">
+            <h3>Layered rate limits</h3>
+            <p>Global, per-tool, per-identity, and per-pattern budgets. Every bucket is checked before any is consumed.</p>
+          </div>
+          <div class="feature">
+            <h3>PII redaction</h3>
+            <p>Eleven builtin patterns plus key-based rules, applied to results, arguments, and audit records. Cards are Luhn-checked.</p>
+          </div>
+          <div class="feature">
+            <h3>Audit and metrics</h3>
+            <p>One JSONL entry per decision, to a file, callback, or several at once. A failing sink can never fail a tool call.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Scope</h2>
+        <p class="callout">
+          <strong>Prompt injection is out of scope.</strong> This library governs tool
+          <em>execution</em>, not model prompt integrity. It limits the blast radius of a call an
+          injected instruction produces, but it cannot tell that call apart from a legitimate one.
+          Pair it with input-side gating, and read the
+          <a href="https://github.com/mughalhere/mcp-policy-guard/blob/main/docs/threat-model.md">threat model</a>
+          before relying on it for anything that matters.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Documentation</h2>
+        <div class="links">
+          <a href="https://github.com/mughalhere/mcp-policy-guard#readme">README</a>
+          <a href="https://github.com/mughalhere/mcp-policy-guard/blob/main/docs/api.md">API reference</a>
+          <a href="https://github.com/mughalhere/mcp-policy-guard/blob/main/docs/policies.md">Writing policies</a>
+          <a href="https://github.com/mughalhere/mcp-policy-guard/blob/main/docs/recipes.md">Recipes</a>
+          <a href="https://github.com/mughalhere/mcp-policy-guard/blob/main/docs/threat-model.md">Threat model</a>
+          <a href="https://github.com/mughalhere/mcp-policy-guard/blob/main/CONTRIBUTING.md">Contributing</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap">
+        MIT © Muhammad Zia ·
+        <a href="https://www.npmjs.com/package/mcp-policy-guard">mcp-policy-guard on npm</a> ·
+        <a href="https://github.com/mughalhere/mcp-policy-guard">source</a>
+      </div>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
