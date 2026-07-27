@@ -1,6 +1,6 @@
 {
   "name": "mcp-policy-guard",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Policy and safety middleware for MCP servers — authorization, rate limits, confirmation gates, audit logging, and PII redaction.",
   "license": "MIT",
   "author": "Muhammad Zia <mughalhere@icloud.com>",
@@ -17,9 +17,16 @@
     "model-context-protocol",
     "middleware",
     "ai-safety",
+    "agent-safety",
+    "authorization",
+    "policy",
     "rate-limit",
     "audit",
+    "audit-log",
+    "pii",
+    "redaction",
     "guardrails",
+    "human-in-the-loop",
     "typescript"
   ],
   "type": "module",
@@ -38,11 +45,13 @@
       }
     }
   },
+  "sideEffects": false,
   "files": [
     "dist",
     "README.md",
     "LICENSE",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "SECURITY.md"
   ],
   "engines": {
     "node": ">=22"
@@ -51,9 +60,15 @@
     "build": "tsup",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src tests --ext .ts",
-    "prepublishOnly": "npm run build && npm run test && npm run typecheck"
+    "lint": "eslint src tests",
+    "lint:fix": "eslint src tests --fix",
+    "format": "prettier --write \"{src,tests,examples}/**/*.{ts,mjs}\" \"*.{json,md}\"",
+    "format:check": "prettier --check \"{src,tests,examples}/**/*.{ts,mjs}\"",
+    "examples": "npm run build && node examples/basic-wrap.mjs && node examples/crm-confirmation.mjs && node examples/advanced-policies.mjs && node examples/observability.mjs",
+    "verify": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "prepublishOnly": "npm run verify"
   },
   "peerDependencies": {
     "@modelcontextprotocol/sdk": ">=1.0.0"
@@ -64,10 +79,12 @@
   "devDependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^3.2.7",
     "eslint": "^9.0.0",
     "prettier": "^3.4.0",
     "tsup": "^8.5.0",
     "typescript": "^5.7.0",
+    "typescript-eslint": "^8.65.0",
     "vitest": "^3.0.0",
     "zod": "^3.25.0"
   }

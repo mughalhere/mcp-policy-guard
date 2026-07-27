@@ -1,0 +1,80 @@
+name: 💡 Feature request
+description: Suggest a capability or an API improvement
+title: "feat: "
+labels: ["enhancement", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the situation you are in, not only the API you want — "I need to
+        allow `read_file` but only under one directory" leads to a better answer
+        than "add a `pathPrefix` option".
+
+        Extension points that may already cover it: a custom `when` condition, a
+        custom audit sink, a custom `ConfirmationStore`, `validate`, or
+        `formatError`. See [docs/api.md](https://github.com/mughalhere/mcp-policy-guard/blob/main/docs/api.md).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do
+      description: The policy, deployment, or safety requirement behind the request.
+      placeholder: |
+        My server exposes a filesystem tool to an agent. I need reads confined to
+        one directory, and I want the denial reason to say why.
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: What you tried with the current API
+      description: Where it fell short, or why it is awkward.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API
+      description: A sketch is fine. Show how it would read in a `guard()` call.
+      render: typescript
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Area
+      options:
+        - Policy / conditions
+        - Confirmation / approval
+        - Rate limiting
+        - Redaction pattern or rule
+        - Audit / metrics
+        - MCP SDK integration
+        - Types / DX
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Constraints this respects
+      description: |
+        Requests that add a runtime dependency, filter prompts rather than tool
+        calls, or make the default configuration more permissive are usually declined.
+      options:
+        - label: It needs no new runtime dependency
+        - label: It does not make the default configuration more permissive
+        - label: It governs tool execution, not model prompt content
+
+  - type: dropdown
+    id: contribute
+    attributes:
+      label: Would you be willing to open a PR?
+      options:
+        - "Yes"
+        - "Yes, with guidance"
+        - "No"
+    validations:
+      required: true
