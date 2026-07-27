@@ -1,0 +1,102 @@
+name: 🐛 Bug report
+description: Something behaves differently from what the docs promise
+title: "fix: "
+labels: ["bug", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report.
+
+        **Security issues do not belong here.** A policy bypass, token forgery,
+        or redaction leak should go through the private channel in
+        [SECURITY.md](https://github.com/mughalhere/mcp-policy-guard/blob/main/SECURITY.md).
+
+        Two things that are usually *not* bugs:
+        - **A tool is denied that you didn't deny.** The default is deny — a tool
+          with no matching `allow` rule does not run.
+        - **An `allow` rule seems ignored.** `deny` and `requireConfirmation` are
+          evaluated before `allow`, regardless of declaration order.
+
+  - type: input
+    id: version
+    attributes:
+      label: mcp-policy-guard version
+      placeholder: "0.2.0"
+    validations:
+      required: true
+
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      placeholder: "22.20.0"
+    validations:
+      required: true
+
+  - type: input
+    id: sdk
+    attributes:
+      label: "@modelcontextprotocol/sdk version (if used)"
+      placeholder: "1.29.0"
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you expected, and what you got instead.
+      placeholder: |
+        Expected: search_files runs.
+        Actual: {"error":"denied","message":"Tool \"search_files\" denied by default …"}
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: |
+        A `createGuardedHandler` snippet is ideal — it needs no MCP transport and
+        runs in one file. Include the guard options you passed, with secrets removed.
+      render: typescript
+      placeholder: |
+        import { createGuardedHandler, allow } from "mcp-policy-guard";
+
+        const handler = createGuardedHandler(
+          async () => ({ content: [{ type: "text", text: "ok" }] }),
+          { policies: [allow("search_*")] },
+        );
+
+        console.log(await handler({ params: { name: "search_files", arguments: {} } }));
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Actual output
+      description: |
+        Paste the whole result object. Guard rejections are JSON inside
+        `content[0].text` — include all of it, not a summary.
+      render: json
+
+  - type: textarea
+    id: audit
+    attributes:
+      label: Audit / debug trail
+      description: |
+        Optional but very helpful. Re-run with `debug: true` and
+        `audit: { sink: "stderr" }` and paste the decision entries.
+      render: shell
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I checked that this is not a policy-precedence or default-deny misunderstanding
+          required: true
+        - label: I am not reporting a security vulnerability (those go through SECURITY.md)
+          required: true
+        - label: I searched existing issues
+          required: true

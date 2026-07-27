@@ -1,0 +1,34 @@
+name: ❓ Question
+description: How do I express policy X / wire the guard into Y
+title: "question: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Questions are welcome — they usually reveal a documentation gap, and the
+        answer often becomes a recipe.
+
+        Worth skimming first: the [README](https://github.com/mughalhere/mcp-policy-guard#readme),
+        [docs/policies.md](https://github.com/mughalhere/mcp-policy-guard/blob/main/docs/policies.md),
+        and [docs/recipes.md](https://github.com/mughalhere/mcp-policy-guard/blob/main/docs/recipes.md).
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+    validations:
+      required: true
+
+  - type: textarea
+    id: setup
+    attributes:
+      label: What your setup looks like
+      description: Guard options, server type, transport — whatever is relevant.
+      render: typescript
+
+  - type: input
+    id: version
+    attributes:
+      label: mcp-policy-guard version
+      placeholder: "0.2.0"

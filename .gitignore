@@ -1,6 +1,10 @@
 node_modules
 dist
 coverage
+tmp
+
+# Audit output from examples and local runs
+*.jsonl
+
 *.log
 .DS_Store
-mcp-policy-guard-audit.jsonl

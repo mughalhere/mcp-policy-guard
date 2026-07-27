@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/mughalhere/mcp-policy-guard/security/advisories/new
+    about: Policy bypass, token forgery, redaction leak — report privately, never as a public issue.
+  - name: 💬 Discussions
+    url: https://github.com/mughalhere/mcp-policy-guard/discussions
+    about: Open-ended questions, ideas, and showing what you built.
+  - name: 📖 Documentation
+    url: https://github.com/mughalhere/mcp-policy-guard#readme
+    about: README, API reference, policy guide, recipes, and threat model.

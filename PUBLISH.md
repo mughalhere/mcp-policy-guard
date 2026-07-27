@@ -32,6 +32,9 @@ Then create package-scoped tokens on npm and add `NPM_TOKEN` to each GitHub repo
 
 ## 1. First-time push to GitHub
 
+> Already done — the repo exists at `mughalhere/mcp-policy-guard`. Kept for
+> reference when bootstrapping the next package.
+
 From this directory (or from the portfolio `oss-bundles/` helper):
 
 ### Option A — from this package folder
@@ -64,11 +67,14 @@ Confirm: https://github.com/mughalhere/mcp-policy-guard
 
 ## 2. One-time npm / Actions setup
 
-1. On [npmjs.com](https://www.npmjs.com/) create an **automation** (or granular) token that can publish `mcp-policy-guard`.
-2. In the GitHub repo: **Settings → Secrets and variables → Actions → New repository secret**
-   - Name: `NPM_TOKEN`
-   - Value: the npm token
-3. Optional but preferred: link the package for **trusted publishing / provenance** on npm (same as `prompt-protection`).
+The workflow publishes with **npm trusted publishing (OIDC)** — no `NPM_TOKEN`
+secret is involved.
+
+1. On [npmjs.com](https://www.npmjs.com/package/mcp-policy-guard/access), under
+   **Publishing access**, add a trusted publisher: this GitHub repository, the
+   `publish.yml` workflow.
+2. Confirm the job keeps `permissions: id-token: write` — OIDC fails without it.
+3. Nothing to rotate: OIDC tokens are minted per run.
 
 ---
 
@@ -84,17 +90,17 @@ Publishing is **tag-driven**. Do not run `npm publish` by hand unless Actions is
 ```bash
 git checkout main
 git pull
-npm version 0.1.0 --no-git-tag-version   # if version not bumped yet
+npm version 0.2.0 --no-git-tag-version   # if version not bumped yet
 # edit CHANGELOG.md, commit version bump via PR if needed
 
-git tag v0.1.0
-git push origin v0.1.0
+git tag v0.2.0
+git push origin v0.2.0
 ```
 
 5. The **Publish to npm** workflow (`.github/workflows/publish.yml`) runs on `v*` tags:
    - `npm ci`
-   - `npm run prepublishOnly` (build + test + typecheck)
-   - `npm publish --access public` using `NPM_TOKEN`
+   - `npm run prepublishOnly` → `npm run verify` (lint + typecheck + test + build)
+   - `npm publish --access public --provenance` via trusted publishing
 
 6. Verify: https://www.npmjs.com/package/mcp-policy-guard
 
@@ -102,10 +108,11 @@ git push origin v0.1.0
 
 | Step | Command / action |
 |------|------------------|
-| Tests green | `npm test && npm run typecheck && npm run build` |
+| Everything green | `npm run verify` |
 | Version bumped | `package.json` + `CHANGELOG.md` |
+| Docs updated | README, `docs/api.md`, migration notes for behaviour changes |
 | Tag pushed | `git tag vX.Y.Z && git push origin vX.Y.Z` |
-| Secret set | `NPM_TOKEN` in repo Actions secrets |
+| Trusted publisher | configured on npm for this repo + `publish.yml` |
 
 ---
 
@@ -117,7 +124,7 @@ npm version patch   # or minor / major — creates commit + tag if you prefer
 git push origin main --follow-tags
 ```
 
-Or bump manually and push only the tag (`v0.1.1`, etc.). Same workflow publishes.
+Or bump manually and push only the tag (`v0.2.1`, etc.). Same workflow publishes.
 
 ---
 
@@ -126,6 +133,6 @@ Or bump manually and push only the tag (`v0.1.1`, etc.). Same workflow publishes
 | Problem | Fix |
 |---------|-----|
 | `403` from `cursor[bot]` when the agent pushes | Push from your machine (SSH as `mughalhere`) or grant the Cursor GitHub App access to this repo |
-| Publish job fails auth | Re-check `NPM_TOKEN`; token must allow publish for this package name |
+| Publish job fails auth | Check the npm trusted-publisher entry matches this repo and `publish.yml`, and that the job still has `id-token: write` |
 | Tag pushed but no workflow | Confirm tag matches `v*` (e.g. `v0.1.0`) and Actions are enabled |
 | Name already taken on npm | Rename in `package.json` before the first publish |
