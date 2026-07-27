@@ -2,7 +2,7 @@
 
 Same flow as [`prompt-protection`](https://github.com/mughalhere/prompt-protection): code lives on GitHub; **pushing a version tag** publishes to npm via Actions.
 
-Remote: `git@github.com:mughalhere/mcp-guard.git`
+Remote: `git@github.com:mughalhere/mcp-policy-guard.git`
 
 ---
 
@@ -41,7 +41,7 @@ cd packages/mcp-policy-guard
 git init -b main
 git add .
 git commit -m "chore: initial mcp-policy-guard release"
-git remote add origin git@github.com:mughalhere/mcp-guard.git
+git remote add origin git@github.com:mughalhere/mcp-policy-guard.git
 git push -u origin main
 ```
 
@@ -51,14 +51,14 @@ From the portfolio repo root:
 
 ```bash
 ./scripts/push-from-bundles.sh
-# or just mcp-guard:
-git clone oss-bundles/mcp-guard.bundle /tmp/mcp-guard
-cd /tmp/mcp-guard
-git remote add origin git@github.com:mughalhere/mcp-guard.git
+# or just mcp-policy-guard:
+git clone oss-bundles/mcp-policy-guard.bundle /tmp/mcp-policy-guard
+cd /tmp/mcp-policy-guard
+git remote add origin git@github.com:mughalhere/mcp-policy-guard.git
 git push -u origin main
 ```
 
-Confirm: https://github.com/mughalhere/mcp-guard
+Confirm: https://github.com/mughalhere/mcp-policy-guard
 
 ---
 

@@ -4,13 +4,13 @@
   "description": "Policy and safety middleware for MCP servers \u2014 authorization, rate limits, confirmation gates, audit logging, and PII redaction.",
   "license": "MIT",
   "author": "Muhammad Zia <mughalhere@icloud.com>",
-  "homepage": "https://github.com/mughalhere/mcp-guard#readme",
+  "homepage": "https://github.com/mughalhere/mcp-policy-guard#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mughalhere/mcp-guard.git"
+    "url": "git+https://github.com/mughalhere/mcp-policy-guard.git"
   },
   "bugs": {
-    "url": "https://github.com/mughalhere/mcp-guard/issues"
+    "url": "https://github.com/mughalhere/mcp-policy-guard/issues"
   },
   "keywords": [
     "mcp",
