@@ -1,6 +1,6 @@
 {
   "name": "mcp-policy-guard",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Policy and safety middleware for MCP servers — authorization, rate limits, confirmation gates, audit logging, and PII redaction.",
   "license": "MIT",
   "author": "Muhammad Zia <mughalhere@icloud.com>",
