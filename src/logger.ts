@@ -4,8 +4,9 @@ let logger: Logger | null = null;
 
 export function getLogger(debug = false): Logger {
   if (!logger) {
-    logger = pino({ level: debug ? "debug" : "silent", name: "mcp-policy-guard" });
+    logger = pino({ name: "mcp-policy-guard" });
   }
+  logger.level = debug ? "debug" : "silent";
   return logger;
 }
 

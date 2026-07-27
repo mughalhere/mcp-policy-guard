@@ -38,6 +38,7 @@ export async function consumeConfirmation(
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
   const record = await store.get(token);
   if (!record) return { ok: false, reason: "Invalid or expired confirmation token" };
+  if (record.expiresAt < Date.now()) return { ok: false, reason: "Confirmation token expired" };
   if (record.used) return { ok: false, reason: "Confirmation token already used" };
   if (record.toolName !== toolName) return { ok: false, reason: "Confirmation token tool mismatch" };
   if (record.argsHash !== hashArgs(args)) return { ok: false, reason: "Confirmation token args mismatch" };
