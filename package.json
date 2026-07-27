@@ -68,7 +68,9 @@
     "format:check": "prettier --check \"{src,tests,examples}/**/*.{ts,mjs}\"",
     "examples": "npm run build && node examples/basic-wrap.mjs && node examples/crm-confirmation.mjs && node examples/advanced-policies.mjs && node examples/observability.mjs",
     "verify": "npm run lint && npm run typecheck && npm run test && npm run build",
-    "prepublishOnly": "npm run verify"
+    "prepublishOnly": "npm run verify",
+    "build:site": "node site/build.mjs",
+    "verify:site": "node site/build.mjs && node site/verify-shims.mjs"
   },
   "peerDependencies": {
     "@modelcontextprotocol/sdk": ">=1.0.0"
@@ -80,6 +82,7 @@
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@types/node": "^22.0.0",
     "@vitest/coverage-v8": "^3.2.7",
+    "esbuild": "^0.28.1",
     "eslint": "^9.0.0",
     "prettier": "^3.4.0",
     "tsup": "^8.5.0",
